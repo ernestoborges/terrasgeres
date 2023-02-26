@@ -34,8 +34,14 @@ export function Canvas() {
                 backgroundImage.src = "/src/assets/maps/village/background.png";
 
                 // player
-                const playerImage = new Image();
-                playerImage.src = "/src/assets/characters/human/male/walk-front.png";
+                const playerImageFront = new Image();
+                playerImageFront.src = "/src/assets/characters/human/male/walk-front.png";
+                const playerImageBack = new Image();
+                playerImageBack.src = "/src/assets/characters/human/male/walk-back.png";
+                const playerImageRight = new Image();
+                playerImageRight.src = "/src/assets/characters/human/male/walk-right.png";
+                const playerImageLeft = new Image();
+                playerImageLeft.src = "/src/assets/characters/human/male/walk-left.png";
 
 
                 // Background Class
@@ -86,7 +92,7 @@ export function Canvas() {
                         } else {
                             this.motion = 0;
                         }
-                        if (this.motion > (16 * 4)){
+                        if (this.motion > (16 * 4)) {
                             this.moving = false;
                         }
 
@@ -106,6 +112,12 @@ export function Canvas() {
                     moving
                     image
                     frame = { val: 0, elapsed: 0 }
+                    sprites = {
+                        up: playerImageBack,
+                        down: playerImageFront,
+                        right: playerImageRight,
+                        left: playerImageLeft
+                    }
 
                     constructor({ moving, image }: PlayerSpriteProps) {
                         this.moving = moving;
@@ -125,24 +137,24 @@ export function Canvas() {
                             this.image.height
                         );
 
-                        if(!background.moving) {
-                                this.frame.val = 0;
+                        if (!background.moving) {
+                            this.frame.val = 0;
                             return;
                         }
 
-                        this.frame.elapsed += 2
+                        this.frame.elapsed += 1
                         if (this.frame.elapsed % 16 === 0) {
                             if (this.frame.val < 3) {
                                 this.frame.val++
                             } else {
                                 this.frame.val = 0;
-                            } 
-                                
+                            }
+
                         }
 
                     }
                 }
-                const player = new PlayerSprite({ moving: false, image: playerImage });
+                const player = new PlayerSprite({ moving: false, image: playerImageFront });
 
                 // moving controler
 
@@ -173,30 +185,37 @@ export function Canvas() {
 
                 // move player
                 const handleCanvasKeydown = (event: KeyboardEvent) => {
-                    if(!background.moving){
+                    if (!background.moving) {
                         switch (event.key) {
                             case "w":
+                                background.moving = true;
                                 keys.w.pressed = true;
+                                player.image = player.sprites.up;
                                 background.direction = "top";
                                 break;
                             case "a":
+                                background.moving = true;
                                 keys.a.pressed = true;
+                                player.image = player.sprites.left;
                                 background.direction = "left";
                                 break;
                             case "s":
+                                background.moving = true;
                                 keys.s.pressed = true;
+                                player.image = player.sprites.down;
                                 background.direction = "down";
                                 break;
                             case "d":
                                 console.log(keys)
+                                background.moving = true;
                                 keys.d.pressed = true;
+                                player.image = player.sprites.right;
                                 background.direction = "right";
                                 break;
                             default:
                                 break;
                         }
                     }
-                    background.moving = true;
 
                 }
                 const handleCanvasKeyup = (event: KeyboardEvent) => {
